@@ -2,184 +2,114 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Peminjaman</title>
+  <title>Peminjaman Alat</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      min-height: 100vh;
-      background-image: url('bghanik.jpg');
-      background-size: cover;
-      background-position: center center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
       font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: #222;
       color: white;
-      text-shadow: 0 0 8px black;
       text-align: center;
       padding: 20px;
     }
-
-    .konten {
-      background-color: rgba(0, 0, 0, 0.4);
-      padding: 30px;
+    .konten, .log {
+      background: rgba(255, 255, 255, 0.1);
+      margin: 10px auto;
+      padding: 20px;
+      max-width: 500px;
       border-radius: 10px;
-      max-width: 600px;
-      width: 100%;
-      margin-bottom: 20px;
     }
-
-    h1 {
-      color: #add8e6;
-    }
-
-    .alat {
-      margin: 15px 0;
-      background-color: rgba(255, 255, 255, 0.1);
+    input, button {
+      margin: 5px;
       padding: 10px;
       border-radius: 5px;
     }
-
     button {
-      margin: 5px;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 5px;
-      background-color: #add8e6;
-      color: black;
-      cursor: pointer;
+      background: lightgreen;
       font-weight: bold;
-    }
-
-    input {
-      padding: 5px;
-      border-radius: 5px;
-      margin-bottom: 10px;
-      border: none;
-    }
-
-    .stok {
-      margin-top: 5px;
-      font-weight: bold;
-    }
-
-    .log {
-      background-color: rgba(0, 0, 0, 0.4);
-      max-width: 600px;
-      width: 100%;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: left;
-    }
-
-    .log h2 {
-      text-align: center;
-    }
-
-    ul {
-      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-  <div class="konten">
-    <h1>Peminjaman Alat</h1>
-    <input type="text" id="nama" placeholder="Masukkan nama peminjam..." />
+<div class="konten">
+  <h1>Peminjaman Alat</h1>
+  <input type="text" id="nama" placeholder="Masukkan nama" />
 
-    <div class="alat">
-      <p>📘 Laptop</p>
-      <p class="stok" id="stok-laptop">10/10 tersedia</p>
-      <button onclick="pinjam('laptop')">Pinjam</button>
-      <button onclick="kembalikan('laptop')">Kembalikan</button>
-    </div>
-
-    <div class="alat">
-      <p>🖥️ PC</p>
-      <p class="stok" id="stok-pc">10/10 tersedia</p>
-      <button onclick="pinjam('pc')">Pinjam</button>
-      <button onclick="kembalikan('pc')">Kembalikan</button>
-    </div>
-
-    <div class="alat">
-      <p>⌨️ Keyboard</p>
-      <p class="stok" id="stok-keyboard">10/10 tersedia</p>
-      <button onclick="pinjam('keyboard')">Pinjam</button>
-      <button onclick="kembalikan('keyboard')">Kembalikan</button>
-    </div>
-
-    <div class="alat">
-      <p>🖱️ Mouse</p>
-      <p class="stok" id="stok-mouse">10/10 tersedia</p>
-      <button onclick="pinjam('mouse')">Pinjam</button>
-      <button onclick="kembalikan('mouse')">Kembalikan</button>
-    </div>
+  <div class="alat">
+    <p>📘 Laptop - <span id="stok-laptop">10</span></p>
+    <button onclick="pinjam('Laptop')">Pinjam</button>
+    <button onclick="kembalikan('Laptop')">Kembalikan</button>
   </div>
 
-  <div class="log">
-    <h2>📋 Data Peminjaman</h2>
-    <ul id="log"></ul>
+  <div class="alat">
+    <p>🖥️ PC - <span id="stok-pc">10</span></p>
+    <button onclick="pinjam('PC')">Pinjam</button>
+    <button onclick="kembalikan('PC')">Kembalikan</button>
   </div>
+</div>
 
-  <script>
-    const stokAwal = 10;
-    const stok = {
-      laptop: 10,
-      pc: 10,
-      keyboard: 10,
-      mouse: 10
-    };
+<div class="log">
+  <h2>📋 Riwayat</h2>
+  <ul id="log"></ul>
+</div>
 
-    function updateStokUI(alat) {
-      const teks = `${stok[alat]}/${stokAwal} tersedia`;
-      document.getElementById(`stok-${alat}`).innerText = teks;
+<script>
+  const stokAwal = 10;
+  const stok = {
+    Laptop: 10,
+    PC: 10
+  };
+
+  const sheetURL = "https://script.google.com/macros/s/AKfycbwhcirbDcUNfehGHhWk8_fi_e4VV2o2Ee61iX6Ff4D6jIDS6GTgNENzCLbmU3IxhL2q/exec"; 
+
+  function updateStokUI() {
+    for (let alat in stok) {
+      const id = "stok-" + alat.toLowerCase();
+      document.getElementById(id).innerText = stok[alat];
     }
+  }
 
-    function pinjam(alat) {
-      const nama = document.getElementById('nama').value.trim();
-      if (!nama) {
-        alert("Masukkan nama peminjam terlebih dahulu.");
-        return;
-      }
-      if (stok[alat] > 0) {
-        stok[alat]--;
-        updateStokUI(alat);
-        logPeminjaman(nama, alat, "meminjam");
-      } else {
-        alert("Stok habis untuk " + alat);
-      }
-    }
+  function pinjam(alat) {
+    const nama = document.getElementById("nama").value.trim();
+    if (!nama) return alert("Masukkan nama dulu!");
 
-    function kembalikan(alat) {
-      const nama = document.getElementById('nama').value.trim();
-      if (!nama) {
-        alert("Masukkan nama pengembali terlebih dahulu.");
-        return;
-      }
-      if (stok[alat] < stokAwal) {
-        stok[alat]++;
-        updateStokUI(alat);
-        logPeminjaman(nama, alat, "mengembalikan");
-      } else {
-        alert("Semua stok sudah kembali.");
-      }
+    if (stok[alat] > 0) {
+      stok[alat]--;
+      updateStokUI();
+      catat(nama, alat, "Pinjam");
+    } else {
+      alert("Stok habis!");
     }
+  }
 
-    function logPeminjaman(nama, alat, aksi) {
-      const ul = document.getElementById("log");
-      const waktu = new Date().toLocaleString();
-      const item = document.createElement("li");
-      item.innerText = `${nama} ${aksi} ${alat} pada ${waktu}`;
-      ul.prepend(item);
+  function kembalikan(alat) {
+    const nama = document.getElementById("nama").value.trim();
+    if (!nama) return alert("Masukkan nama dulu!");
+
+    if (stok[alat] < stokAwal) {
+      stok[alat]++;
+      updateStokUI();
+      catat(nama, alat, "Kembali");
+    } else {
+      alert("Semua alat sudah kembali.");
     }
-  </script>
+  }
+
+  function catat(nama, alat, aksi) {
+    const waktu = new Date().toLocaleString();
+    const data = { Nama: nama, Alat: alat, Aksi: aksi, Waktu: waktu };
+
+    fetch(sheetURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }).then(res => res.text()).then(res => console.log(res));
+
+    const li = document.createElement("li");
+    li.textContent = `${nama} ${aksi} ${alat} pada ${waktu}`;
+    document.getElementById("log").prepend(li);
+  }
+</script>
 
 </body>
 </html>
