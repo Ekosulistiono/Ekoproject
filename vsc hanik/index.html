@@ -99,11 +99,15 @@
     const waktu = new Date().toLocaleString();
     const data = { Nama: nama, Alat: alat, Aksi: aksi, Waktu: waktu };
 
-    fetch(sheetURL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    }).then(res => res.text()).then(res => console.log(res));
+fetch(sheetURL, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
+})
+.then(res => res.json())
+.then(resp => console.log("⚙️ WebApp respon:", resp))
+.catch(err => console.error("⚠️ Fetch error:", err));
+
 
     const li = document.createElement("li");
     li.textContent = `${nama} ${aksi} ${alat} pada ${waktu}`;
